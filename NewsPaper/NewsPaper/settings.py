@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -115,7 +116,7 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'Chudalex1999'
-EMAIL_HOST_PASSWORD = '123'
+EMAIL_HOST_PASSWORD = 'Sanechka23062004'
 EMAIL_USE_SSL = True
 
 ACCOUNT_FORMS = {'signup': 'sign.models.CommonSignupForm'}
@@ -227,23 +228,35 @@ LOGGING = {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse',
         },
+        'debug_and_info': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: record.levelno in (logging.DEBUG, logging.INFO),
+        },
+        'error_and_above': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: record.levelno >= logging.ERROR,
+        },
+        'warning_only': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: record.levelno == logging.WARNING,
+        },
     },
     'handlers': {
         'console_debug': {
             'level': 'DEBUG',
-            'filters': ['require_debug_true'],
+            'filters': ['require_debug_true', 'debug_and_info'],
             'class': 'logging.StreamHandler',
             'formatter': 'debug_form',
         },
         'console_warn': {
             'level': 'WARNING',
-            'filters': ['require_debug_true'],
+            'filters': ['require_debug_true', 'warning_only'],
             'class': 'logging.StreamHandler',
             'formatter': 'warn_form',
         },
         'console_error': {
             'level': 'ERROR',
-            'filters': ['require_debug_true'],
+            'filters': ['require_debug_true', 'error_and_above'],
             'class': 'logging.StreamHandler',
             'formatter': 'error_form',
         },
