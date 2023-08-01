@@ -1,0 +1,33 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+{{ piece_of_news.title }}
+{% endblock title %}
+
+{% block content %}
+  <h1>{{ piece_of_news.title }}</h1>
+  <p><span style="text-decoration: underline;">Рейтинг:</span> {{ piece_of_news.rating }}</p>
+  <p>{{ piece_of_news.content|censor }}</p>
+  <div style="text-align: right;">
+    <a href="{% url 'update_news' piece_of_news.pk %}">редактировать</a>
+    <a href="{% url 'delete_news' piece_of_news.pk %}">удалить</a>
+    <h4>Автор: {{ piece_of_news.author.user }}</h4>
+    <p>Дата публикации: {{ piece_of_news.date_time|date:'d F Y' }}</p>
+  </div>
+
+  <h2>Комментарии:</h2>
+  <ul>
+    {% for comment in comments %}
+      <li>
+        <h4>{{ comment.user }}</h4>
+        <p>{{ comment.text|censor }}</p>
+        <p>Дата: {{ comment.date_time|date:'d F Y' }}</p>
+        <p>Рейтинг: {{ comment.rating }}</p>
+      </li>
+    {% empty %}
+      <p>Пока нет комментариев</p>
+    {% endfor %}
+  </ul>
+{% endblock content %}
